@@ -5,8 +5,6 @@ public enum SchemaColor implements Color {
     GREEN,
     RED,
     ORANGE,
-    WHITE,
-    BLACK,
     YELLOW,
     PINK,
     ;

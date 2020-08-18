@@ -24,7 +24,7 @@ class GuessEvaluatorTest {
     @Test
     void mismatch() {
         var guess = Guess.of(RED, BLUE);
-        var solution = Guess.of(GREEN, WHITE);
+        var solution = Guess.of(GREEN, PINK);
 
         GuessResult result = evaluator.evaluate(guess, solution);
         Assertions.assertThat(result).isEqualTo(GuessResult.of());
