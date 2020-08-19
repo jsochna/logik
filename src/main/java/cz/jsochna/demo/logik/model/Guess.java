@@ -3,21 +3,24 @@ package cz.jsochna.demo.logik.model;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-import java.util.Collections;
-import java.util.List;
-
 @ToString
 @EqualsAndHashCode
 public class Guess {
-    List<Color> colors;
+    String colors;
 
-    public static Guess of(Color... bits) {
+    public static Guess of(char[] input) {
         Guess guess = new Guess();
-        guess.colors = List.of(bits);
+        guess.colors = String.copyValueOf(input);
         return guess;
     }
 
-    public List<Color> getBits() {
-        return Collections.unmodifiableList(colors);
+    public static Guess of(String input) {
+        Guess guess = new Guess();
+        guess.colors = input;
+        return guess;
+    }
+
+    public char[] getBits() {
+        return colors.toCharArray();
     }
 }

@@ -7,7 +7,6 @@ import cz.jsochna.demo.logik.model.GuessResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static cz.jsochna.demo.logik.model.SchemaColor.*;
 import static cz.jsochna.demo.logik.model.SolutionColor.WHITE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,15 +23,15 @@ class SolverTest {
 
     @Test
     void guessInLineWithPreviousResults() {
-        board = new Board(new GameConfig(1, 3)); // BLUE, GREEN, RED
+        board = new Board(new GameConfig(1, "ABC"));
         solver = new Solver(board);
 
-        board.recordGuess(Guess.of(BLUE), GuessResult.of());
-        board.recordGuess(Guess.of(GREEN), GuessResult.of());
+        board.recordGuess(Guess.of("A"), GuessResult.of());
+        board.recordGuess(Guess.of("B"), GuessResult.of());
 
         Guess guessedSolution = solver.generateGuess();
 
-        assertThat(guessedSolution).isEqualTo(Guess.of(RED));
+        assertThat(guessedSolution).isEqualTo(Guess.of("C"));
     }
 
     @Test
@@ -40,11 +39,11 @@ class SolverTest {
         board = new Board(new GameConfig(2, 3)); // BLUE, GREEN, RED
         solver = new Solver(board);
 
-        board.recordGuess(Guess.of(BLUE, GREEN), GuessResult.of(WHITE, WHITE));
+        board.recordGuess(Guess.of("AB"), GuessResult.of(WHITE, WHITE));
 
         Guess guessedSolution = solver.generateGuess();
 
-        assertThat(guessedSolution).isEqualTo(Guess.of(GREEN, BLUE));
+        assertThat(guessedSolution).isEqualTo(Guess.of("BA"));
     }
 
 

@@ -1,22 +1,20 @@
 package cz.jsochna.demo.logik;
 
-import cz.jsochna.demo.logik.model.Color;
 import cz.jsochna.demo.logik.model.GameConfig;
 import cz.jsochna.demo.logik.model.Guess;
-import cz.jsochna.demo.logik.model.SchemaColor;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class GuessGenerator implements Supplier<Guess> {
     final int solutionLength;
-    final Color[] availableColors;
+    final char[] availableColors;
     final byte[] bitsPosition;
     GameConfig config;
 
     public GuessGenerator(GameConfig config) {
         this.config = config;
-        availableColors = config.getEnabledColors().toArray(new SchemaColor[0]);
+        availableColors = config.getEnabledColors().getColors();
         solutionLength = config.getSolutionLength();
         bitsPosition = new byte[solutionLength];
         Arrays.fill(bitsPosition, (byte) 0);
@@ -38,7 +36,7 @@ public class GuessGenerator implements Supplier<Guess> {
     }
 
     private Guess convertBitsToGuess() {
-        Color[] guessBits = new Color[bitsPosition.length];
+        char[] guessBits = new char[bitsPosition.length];
 
         for (int i=0; i<bitsPosition.length; i++) {
             guessBits[i] = bitToColor(bitsPosition[i]);
@@ -47,9 +45,9 @@ public class GuessGenerator implements Supplier<Guess> {
         return Guess.of(guessBits);
     }
 
-    private Color bitToColor(byte b) {
-        assert b < availableColors.length;
-        return this.availableColors[b];
+    private char bitToColor(byte offset) {
+        assert offset < availableColors.length;
+        return this.availableColors[offset];
     }
 
 

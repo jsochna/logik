@@ -6,7 +6,6 @@ import cz.jsochna.demo.logik.model.SolutionColor;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static cz.jsochna.demo.logik.model.SchemaColor.*;
 import static cz.jsochna.demo.logik.model.SolutionColor.BLACK;
 
 class GuessEvaluatorTest {
@@ -14,7 +13,7 @@ class GuessEvaluatorTest {
 
     @Test
     void correctGuessSolution() {
-        var guess = Guess.of(RED, RED);
+        var guess = Guess.of("AA");
         var solution = guess;
 
         GuessResult result = evaluator.evaluate(guess, solution);
@@ -23,8 +22,8 @@ class GuessEvaluatorTest {
 
     @Test
     void mismatch() {
-        var guess = Guess.of(RED, BLUE);
-        var solution = Guess.of(GREEN, PINK);
+        var guess = Guess.of("AB");
+        var solution = Guess.of("CD");
 
         GuessResult result = evaluator.evaluate(guess, solution);
         Assertions.assertThat(result).isEqualTo(GuessResult.of());
@@ -32,8 +31,8 @@ class GuessEvaluatorTest {
 
     @Test
     void partialMatch() {
-        var guess = Guess.of(RED, BLUE);
-        var solution = Guess.of(BLUE, GREEN);
+        var guess = Guess.of("AB");
+        var solution = Guess.of("BC");
 
         GuessResult result = evaluator.evaluate(guess, solution);
         Assertions.assertThat(result).isEqualTo(GuessResult.of(SolutionColor.WHITE));
