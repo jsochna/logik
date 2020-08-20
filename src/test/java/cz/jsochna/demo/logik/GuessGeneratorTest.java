@@ -30,4 +30,20 @@ class GuessGeneratorTest {
         );
     }
 
+    @Test
+    void allOptionsForTwoColorsTwoSlots() {
+        var config = new GameConfig(2, "AB");
+        var generator = new GuessGenerator(config);
+        Stream<Guess> stream = Stream.generate(generator);
+
+        List<Guess> allGuesses = stream
+                .takeWhile(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        assertThat(allGuesses).containsExactlyInAnyOrder(
+                Guess.of("AB"),
+                Guess.of("BA")
+        );
+    }
+
 }

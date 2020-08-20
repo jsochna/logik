@@ -20,6 +20,14 @@ public class Guess {
         return guess;
     }
 
+    public static Guess of(SchemaColor... colorInput) {
+        char[] chars = new char[colorInput.length];
+        for (int i = 0; i < colorInput.length; i++) {
+            chars[i] = colorInput[i].toChar();
+        }
+        return Guess.of(chars);
+    }
+
     public char[] getBits() {
         return colors.toCharArray();
     }
