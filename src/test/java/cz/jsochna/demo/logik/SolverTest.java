@@ -1,29 +1,24 @@
 package cz.jsochna.demo.logik;
 
+import cz.jsochna.demo.logik.color_strategy.OnlyOnceColorRepeatStrategy;
 import cz.jsochna.demo.logik.model.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static cz.jsochna.demo.logik.model.SchemaColor.*;
-import static cz.jsochna.demo.logik.model.SolutionColor.BLACK;
-import static cz.jsochna.demo.logik.model.SolutionColor.WHITE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SolverTest {
 
-    SolutionEvaluator evaluator = new SolutionEvaluator();
-
     Board board;
     Solver solver;
 
-    @BeforeEach
-    void resetBoard() {
-    }
-
     @Test
     void guessInLineWithPreviousResults() {
-        board = new Board(new GameConfig(1, "ABC"));
+        board = new Board(GameConfig.builder()
+                .solutionLength(1)
+                .enabledColors(new EnabledColors("ABC"))
+                .build());
         solver = new Solver(board);
 
         board.recordGuess(Guess.of("A"), GuessResult.of());
@@ -36,10 +31,13 @@ class SolverTest {
 
     @Test
     void gotColorsWithoutPosition() {
-        board = new Board(new GameConfig(2, "ABC"));
+        board = new Board(GameConfig.builder()
+                .solutionLength(2)
+                .enabledColors(new EnabledColors("ABCD"))
+                .build());
         solver = new Solver(board);
 
-        board.recordGuess(Guess.of("AB"), GuessResult.of(WHITE, WHITE));
+        board.recordGuess(Guess.of("AB"), GuessResult.of(0, 2));
 
         Guess guessedSolution = solver.generateGuess();
 
@@ -47,21 +45,47 @@ class SolverTest {
     }
 
     @Test
-    @Disabled
     void realGame() {
-        board = new Board(new GameConfig(4, 7));
+        board = new Board(GameConfig.builder()
+                .solutionLength(4)
+                .enabledColors(new EnabledColors(7))
+                .strategy(new OnlyOnceColorRepeatStrategy())
+                .build());
         solver = new Solver(board);
 
-        board.recordGuess(Guess.of(RED, GREEN, ORANGE, BLUE), GuessResult.of(BLACK, WHITE));
-        board.recordGuess(Guess.of(RED, YELLOW, GREEN, PINK), GuessResult.of(WHITE, WHITE, WHITE));
-        board.recordGuess(Guess.of(YELLOW, RED, PINK, RED), GuessResult.of(WHITE, WHITE));
-        board.recordGuess(Guess.of(GREEN, PINK, RED, YELLOW), GuessResult.of(BLACK, WHITE, WHITE));
-        board.recordGuess(Guess.of(PINK, GREEN, BLUE, YELLOW), GuessResult.of(BLACK, BLACK));
+        board.recordGuess(Guess.of(RED, GREEN, ORANGE, BLUE), GuessResult.of(1, 1));
+        board.recordGuess(Guess.of(RED, YELLOW, GREEN, PINK), GuessResult.of(0, 3));
+        board.recordGuess(Guess.of(YELLOW, RED, PINK, RED), GuessResult.of(0, 2));
+        board.recordGuess(Guess.of(GREEN, PINK, RED, YELLOW), GuessResult.of(1, 2));
+        board.recordGuess(Guess.of(PINK, GREEN, BLUE, YELLOW), GuessResult.of(2, 0));
+        board.recordGuess(Guess.of(PINK, RED, ORANGE, YELLOW), GuessResult.of(1, 1));
 
         Guess guessedSolution = solver.generateGuess();
 
-        System.out.println(guessedSolution);
+        Assertions.assertThat(guessedSolution).isEqualTo(Guess.of(PINK, GREEN, RED, SWHITE));
+    }
 
+    @Test
+    void realGame2() {
+        board = new Board(GameConfig.builder()
+                .solutionLength(5)
+                .enabledColors(new EnabledColors(8))
+                .strategy(new OnlyOnceColorRepeatStrategy())
+                .build());
+        solver = new Solver(board);
+
+        board.recordGuess(Guess.of(RED, GREEN, ORANGE, BLUE, YELLOW), GuessResult.of(2, 2));
+        board.recordGuess(Guess.of(YELLOW, GREEN, ORANGE, RED, SWHITE), GuessResult.of(1, 2));
+        board.recordGuess(Guess.of(RED, GREEN, PINK, SBLACK, BLUE), GuessResult.of(1, 3));
+        board.recordGuess(Guess.of(YELLOW, RED, PINK, BLUE, ORANGE), GuessResult.of(1, 2));
+        board.recordGuess(Guess.of(BLUE, SBLACK, GREEN, ORANGE, RED), GuessResult.of(1, 3));
+        board.recordGuess(Guess.of(GREEN, SBLACK, BLUE, YELLOW, PINK), GuessResult.of(0, 4));
+        board.recordGuess(Guess.of(YELLOW, GREEN, SBLACK, BLUE, RED), GuessResult.of(3, 2));
+
+        Guess guessedSolution = solver.generateGuess();
+
+        Assertions.assertThat(guessedSolution).isEqualTo(Guess.of(SBLACK, GREEN, YELLOW, BLUE, RED));
+        System.out.println(guessedSolution);
     }
 
 }

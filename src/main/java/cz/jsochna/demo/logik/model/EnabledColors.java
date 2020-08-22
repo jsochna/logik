@@ -1,12 +1,16 @@
 package cz.jsochna.demo.logik.model;
 
+import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringExclude;
 import org.springframework.util.Assert;
 
+@ToString
 public class EnabledColors {
     private static final String ALL_COLORS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     final String enabledOnly;
+    @ToStringExclude
     final char[] enabledChars;
 
     public EnabledColors(int limit) {

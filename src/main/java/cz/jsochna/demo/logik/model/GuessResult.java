@@ -12,6 +12,12 @@ public class GuessResult {
         guess.colors = List.of(bits);
         return guess;
     }
+    public static GuessResult of(int black, int white) {
+        List<SolutionColor> preparedSolution = new ArrayList<>(black + white);
+        while (black-- > 0) preparedSolution.add(SolutionColor.BLACK);
+        while (white-- > 0) preparedSolution.add(SolutionColor.WHITE);
+        return from(preparedSolution);
+    }
     public static GuessResult from(Collection<SolutionColor> bits) {
         GuessResult guess = new GuessResult();
         guess.colors = new ArrayList<>(bits);

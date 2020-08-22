@@ -33,8 +33,8 @@ public class SolutionEvaluator {
             var gC = gL[i];
             Integer cardinality = solutionCardinality.get(gC);
             if (cardinality != null && cardinality > 0) {
-                result.add(SolutionColor.WHITE);
                 lowerCardinality(gC, solutionCardinality);
+                result.add(SolutionColor.WHITE);
             }
         };
 
@@ -51,6 +51,6 @@ public class SolutionEvaluator {
     }
 
     private void lowerCardinality(Character gc, Map<Character, Integer> solutionCardinality) {
-        solutionCardinality.computeIfPresent(gc, (color, integer) -> (integer--));
+        solutionCardinality.computeIfPresent(gc, (color, integer) -> (--integer));
     }
 }

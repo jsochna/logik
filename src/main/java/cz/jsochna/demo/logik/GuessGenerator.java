@@ -1,5 +1,6 @@
 package cz.jsochna.demo.logik;
 
+import cz.jsochna.demo.logik.color_strategy.ColorRepeatStrategy;
 import cz.jsochna.demo.logik.model.GameConfig;
 import cz.jsochna.demo.logik.model.Guess;
 
@@ -12,6 +13,8 @@ public class GuessGenerator implements Supplier<Guess> {
     final byte[] bitsPosition;
     GameConfig config;
 
+    ColorRepeatStrategy validator;
+
     public GuessGenerator(GameConfig config) {
         this.config = config;
         availableColors = config.getEnabledColors().getColors();
@@ -19,6 +22,8 @@ public class GuessGenerator implements Supplier<Guess> {
         bitsPosition = new byte[solutionLength];
         Arrays.fill(bitsPosition, (byte) 0);
         bitsPosition[0] = -1;
+
+        this.validator = config.getStrategy();
     }
 
     private boolean increasePosition() {
@@ -53,9 +58,13 @@ public class GuessGenerator implements Supplier<Guess> {
 
     @Override
     public Guess get() {
-        boolean ok = increasePosition();
-        if (!ok) return null;
+        Guess guess;
+        do {
+            boolean ok = increasePosition();
+            if (!ok) return null;
+            guess = convertBitsToGuess();
+        } while (! validator.isValidInStrategy(guess));
 
-        return convertBitsToGuess();
+        return guess;
     }
 }

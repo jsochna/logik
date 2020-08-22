@@ -1,29 +1,22 @@
 package cz.jsochna.demo.logik.model;
 
-import lombok.Getter;
-import lombok.ToString;
+import cz.jsochna.demo.logik.color_strategy.ColorRepeatStrategy;
+import cz.jsochna.demo.logik.color_strategy.OnlyOnceColorRepeatStrategy;
+import lombok.*;
 
 @Getter
 @ToString
+@Builder
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 public class GameConfig {
 
     @Getter
     EnabledColors enabledColors;
 
     @Getter
-    short solutionLength;
+    int solutionLength;
 
-    public GameConfig(int solutionLength, int colors) {
-        this(solutionLength, new EnabledColors(colors));
-    }
+    @Builder.Default
+    ColorRepeatStrategy strategy = new OnlyOnceColorRepeatStrategy();
 
-    public GameConfig(int solutionLength, String inputColors) {
-        this(solutionLength, new EnabledColors(inputColors));
-        this.solutionLength = (short) solutionLength;
-    }
-
-    public GameConfig(int solutionLength, EnabledColors enabledColors) {
-        this.solutionLength = (short) solutionLength;
-        this.enabledColors = enabledColors;
-    }
 }

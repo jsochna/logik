@@ -7,10 +7,15 @@ public enum SchemaColor implements Color {
     BLUE,
     YELLOW,
     PINK,
-    GRAY
+    SWHITE,
+    SBLACK
     ;
 
     char toChar() {
         return (char) ('A' + ordinal());
+    }
+
+    static {
+        assert RED.toChar() == 'A';
     }
 }

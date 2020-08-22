@@ -38,5 +38,23 @@ class GuessEvaluatorTest {
         Assertions.assertThat(result).isEqualTo(GuessResult.of(SolutionColor.WHITE));
     }
 
+    @Test
+    void partialMatch2() {
+        var guess = Guess.of("BA");
+        var solution = Guess.of("CB");
+
+        GuessResult result = evaluator.evaluate(guess, solution);
+        Assertions.assertThat(result).isEqualTo(GuessResult.of(SolutionColor.WHITE));
+    }
+
+    @Test
+    void multipleColors() {
+        var guess = Guess.of("ABA");
+        var solution = Guess.of("ABC");
+
+        GuessResult result = evaluator.evaluate(guess, solution);
+        Assertions.assertThat(result).isEqualTo(GuessResult.of(2, 0));
+    }
+
 
 }
