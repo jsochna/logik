@@ -9,21 +9,20 @@ import java.util.stream.Stream;
 
 public class Solver {
 
-    Board board;
+    private final Board board;
 
-    GuessGenerator generator;
+    private final GuessGenerator generator;
 
-    Stream<Guess> guessStream;
-    private SolutionEvaluator evaluator;
+    private final SolutionEvaluator evaluator;
 
     Solver(Board board) {
         this.board = board;
         generator = new GuessGenerator(board.getConfig());
-        guessStream = Stream.generate(generator);
         evaluator = new SolutionEvaluator();
     }
 
     public Guess generateGuess() {
+        var guessStream = Stream.generate(generator);
         var guess = guessStream
                 .takeWhile(Objects::nonNull)
                 .filter(this::validateGuessAgainstPastResults)

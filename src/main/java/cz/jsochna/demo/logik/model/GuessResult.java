@@ -1,54 +1,54 @@
 package cz.jsochna.demo.logik.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import lombok.Getter;
+import lombok.ToString;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Objects;
+
+@Getter
+@ToString
 public class GuessResult {
-    List<SolutionColor> colors;
+    private short black;
+    private short white;
 
     public static GuessResult of(SolutionColor... bits) {
-        GuessResult guess = new GuessResult();
-        guess.colors = List.of(bits);
-        return guess;
+        return new GuessResult(Arrays.asList(bits));
     }
     public static GuessResult of(int black, int white) {
-        List<SolutionColor> preparedSolution = new ArrayList<>(black + white);
-        while (black-- > 0) preparedSolution.add(SolutionColor.BLACK);
-        while (white-- > 0) preparedSolution.add(SolutionColor.WHITE);
-        return from(preparedSolution);
+        return new GuessResult(black, white);
     }
     public static GuessResult from(Collection<SolutionColor> bits) {
-        GuessResult guess = new GuessResult();
-        guess.colors = new ArrayList<>(bits);
-        return guess;
+        return new GuessResult(bits);
     }
 
+    GuessResult(int black, int white) {
+        this.black = (short) black;
+        this.white = (short) white;
+    }
 
-    @Override
-    public String toString() {
-        return "GuessResult{" +
-                "colors=" + colors +
-                '}';
+    GuessResult(Collection<SolutionColor> colors) {
+        for (Color c : colors) {
+            if (c.equals(SolutionColor.BLACK)) {
+                black++;
+            } else if (c.equals(SolutionColor.WHITE)) {
+                white++;
+            }
+        }
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-
         if (!(o instanceof GuessResult)) return false;
-
         GuessResult that = (GuessResult) o;
-
-        return new org.apache.commons.lang3.builder.EqualsBuilder()
-                .append(colors, that.colors)
-                .isEquals();
+        return black == that.black &&
+                white == that.white;
     }
 
     @Override
     public int hashCode() {
-        return new org.apache.commons.lang3.builder.HashCodeBuilder(17, 37)
-                .append(colors)
-                .toHashCode();
+        return Objects.hash(black, white);
     }
 }
