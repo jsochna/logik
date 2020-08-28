@@ -1,6 +1,6 @@
 package cz.jsochna.demo.logik.model;
 
-public enum SolutionColor implements Color {
+public enum SolutionColor {
     WHITE,
     BLACK,
     ;

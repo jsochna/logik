@@ -3,32 +3,36 @@ package cz.jsochna.demo.logik.model;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 @ToString
 @EqualsAndHashCode
 public class Guess {
-    String colors;
+    List<Color> colors;
+
+    private Guess(List<Color> c) {
+        this.colors = c;
+    }
 
     public static Guess of(char[] input) {
-        Guess guess = new Guess();
-        guess.colors = String.copyValueOf(input);
-        return guess;
+        List<Color> colors = new ArrayList<>(input.length);
+        for (char c : input) {
+            colors.add(new CharacterColor(c));
+        }
+        return new Guess(colors);
     }
 
     public static Guess of(String input) {
-        Guess guess = new Guess();
-        guess.colors = input;
-        return guess;
+        return of(input.toCharArray());
     }
 
-    public static Guess of(SchemaColor... colorInput) {
-        char[] chars = new char[colorInput.length];
-        for (int i = 0; i < colorInput.length; i++) {
-            chars[i] = colorInput[i].toChar();
-        }
-        return Guess.of(chars);
+    public static Guess of(Color... colorInput) {
+        return new Guess(Arrays.asList(colorInput));
     }
 
-    public char[] getBits() {
-        return colors.toCharArray();
+    public List<Color> getBits() {
+        return colors;
     }
 }

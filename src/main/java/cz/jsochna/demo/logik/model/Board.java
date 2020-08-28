@@ -21,7 +21,7 @@ public class Board {
     }
 
     public void recordGuess(Guess guess, GuessResult result) {
-        Assert.state(guess.getBits().length == config.solutionLength,
+        Assert.state(guess.getBits().size() == config.solutionLength,
                 "Solution length doesn't match the config");
         var round = new Round(guess, result);
         rounds.add(round);

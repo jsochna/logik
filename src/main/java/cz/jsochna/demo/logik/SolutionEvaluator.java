@@ -1,8 +1,11 @@
 package cz.jsochna.demo.logik;
 
+import cz.jsochna.demo.logik.model.Color;
 import cz.jsochna.demo.logik.model.Guess;
 import cz.jsochna.demo.logik.model.GuessResult;
 import cz.jsochna.demo.logik.model.SolutionColor;
+import lombok.NonNull;
+import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -14,15 +17,15 @@ public class SolutionEvaluator {
         var gL = guess.getBits();
         var sL = solution.getBits();
 
-        Map<Character, Integer> solutionCardinality = getCardinalityMap(sL);
+        Map<Color, Integer> solutionCardinality = getCardinalityMap(sL);
 
         List<SolutionColor> result = new LinkedList<>();
         List<Integer> positionsToTestForWhite = new ArrayList<>();
-        for (int i=0; i<gL.length; i++) {
-            var gc = gL[i];
-            var sc = sL[i];
+        for (int i=0; i<gL.size(); i++) {
+            var gc = gL.get(i);
+            var sc = sL.get(i);
 
-            if (gc == sc) {
+            if (Objects.equals(gc, sc)) {
                 result.add(SolutionColor.BLACK);
                 lowerCardinality(gc, solutionCardinality);
             } else {
@@ -30,9 +33,10 @@ public class SolutionEvaluator {
             }
         }
         Consumer<Integer> evaluateMispositionedColors = i -> {
-            var gC = gL[i];
-            Integer cardinality = solutionCardinality.get(gC);
-            if (cardinality != null && cardinality > 0) {
+            var gC = gL.get(i);
+            @NonNull
+            Integer cardinality = solutionCardinality.getOrDefault(gC, 0);
+            if (cardinality > 0) {
                 lowerCardinality(gC, solutionCardinality);
                 result.add(SolutionColor.WHITE);
             }
@@ -42,15 +46,11 @@ public class SolutionEvaluator {
         return GuessResult.from(result);
     }
 
-    private Map<Character, Integer> getCardinalityMap(char[] sL) {
-        HashMap<Character, Integer> cardinality = new HashMap<>();
-        for (char c : sL) {
-            cardinality.compute(c, (k, v) -> Optional.ofNullable(v).orElse(0) + 1);
-        }
-        return cardinality;
+    private Map<Color, Integer> getCardinalityMap(Collection<Color> sL) {
+        return CollectionUtils.getCardinalityMap(sL);
     }
 
-    private void lowerCardinality(Character gc, Map<Character, Integer> solutionCardinality) {
+    private void lowerCardinality(Color gc, Map<Color, Integer> solutionCardinality) {
         solutionCardinality.computeIfPresent(gc, (color, integer) -> (--integer));
     }
 }

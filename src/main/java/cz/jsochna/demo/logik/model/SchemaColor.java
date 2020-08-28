@@ -8,10 +8,11 @@ public enum SchemaColor implements Color {
     YELLOW,
     PINK,
     SWHITE,
-    SBLACK
+    SBLACK,
+    GRAY,
     ;
 
-    char toChar() {
+    public char toChar() {
         return (char) ('A' + ordinal());
     }
 

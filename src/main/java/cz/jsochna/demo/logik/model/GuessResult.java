@@ -29,7 +29,7 @@ public class GuessResult {
     }
 
     GuessResult(Collection<SolutionColor> colors) {
-        for (Color c : colors) {
+        for (SolutionColor c : colors) {
             if (c.equals(SolutionColor.BLACK)) {
                 black++;
             } else if (c.equals(SolutionColor.WHITE)) {
