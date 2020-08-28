@@ -1,5 +1,8 @@
 package cz.jsochna.demo.logik.model;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class CharacterColor implements Color {
 
     final char character;

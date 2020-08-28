@@ -19,10 +19,6 @@ public class GuessResult {
     public static GuessResult of(int black, int white) {
         return new GuessResult(black, white);
     }
-    public static GuessResult from(Collection<SolutionColor> bits) {
-        return new GuessResult(bits);
-    }
-
     GuessResult(int black, int white) {
         this.black = (short) black;
         this.white = (short) white;

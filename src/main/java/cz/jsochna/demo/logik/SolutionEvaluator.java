@@ -3,12 +3,11 @@ package cz.jsochna.demo.logik;
 import cz.jsochna.demo.logik.model.Color;
 import cz.jsochna.demo.logik.model.Guess;
 import cz.jsochna.demo.logik.model.GuessResult;
-import cz.jsochna.demo.logik.model.SolutionColor;
 import lombok.NonNull;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class SolutionEvaluator {
 
@@ -19,31 +18,37 @@ public class SolutionEvaluator {
 
         Map<Color, Integer> solutionCardinality = getCardinalityMap(sL);
 
-        List<SolutionColor> result = new LinkedList<>();
+        int blacks = 0;
         List<Integer> positionsToTestForWhite = new ArrayList<>();
         for (int i=0; i<gL.size(); i++) {
             var gc = gL.get(i);
             var sc = sL.get(i);
 
             if (Objects.equals(gc, sc)) {
-                result.add(SolutionColor.BLACK);
+                blacks++;
                 lowerCardinality(gc, solutionCardinality);
             } else {
                 positionsToTestForWhite.add(i);
             }
         }
-        Consumer<Integer> evaluateMispositionedColors = i -> {
+
+
+        Predicate<Integer> evaluateMispositionedColors = i -> {
             var gC = gL.get(i);
             @NonNull
             Integer cardinality = solutionCardinality.getOrDefault(gC, 0);
             if (cardinality > 0) {
                 lowerCardinality(gC, solutionCardinality);
-                result.add(SolutionColor.WHITE);
+                return true;
             }
+
+            return false;
         };
 
-        positionsToTestForWhite.forEach(evaluateMispositionedColors);
-        return GuessResult.from(result);
+        int whites = (int) positionsToTestForWhite.stream()
+                .filter(evaluateMispositionedColors)
+                .count();
+        return GuessResult.of(blacks, whites);
     }
 
     private Map<Color, Integer> getCardinalityMap(Collection<Color> sL) {

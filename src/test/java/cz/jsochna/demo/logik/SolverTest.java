@@ -23,7 +23,7 @@ class SolverTest {
         void guessInLineWithPreviousResults() {
             board = new Board(GameConfig.builder()
                     .solutionLength(1)
-                    .enabledColors(new EnabledColors("ABC"))
+                    .enabledColors(ColorModelGenerator.fromString("ABC"))
                     .build());
             solver = new Solver(board);
 
@@ -39,7 +39,7 @@ class SolverTest {
         void gotColorsWithoutPosition() {
             board = new Board(GameConfig.builder()
                     .solutionLength(2)
-                    .enabledColors(new EnabledColors("ABCD"))
+                    .enabledColors(ColorModelGenerator.fromString("ABCD"))
                     .build());
             solver = new Solver(board);
 
@@ -57,7 +57,7 @@ class SolverTest {
         void realGameLen4() {
             board = new Board(GameConfig.builder()
                     .solutionLength(4)
-                    .enabledColors(new EnabledColors(7))
+                    .enabledColors(ColorModelGenerator.subset(7, SchemaColor.values()))
                     .strategy(new OnlyOnceColorRepeatStrategy())
                     .build());
             solver = new Solver(board);
@@ -78,7 +78,7 @@ class SolverTest {
         void realGameLen5() {
             board = new Board(GameConfig.builder()
                     .solutionLength(5)
-                    .enabledColors(new EnabledColors(8))
+                    .enabledColors(ColorModelGenerator.subset(8, SchemaColor.values()))
                     .strategy(new OnlyOnceColorRepeatStrategy())
                     .build());
             solver = new Solver(board);
@@ -104,10 +104,10 @@ class SolverTest {
         void colorsDontRepeatLength4() {
             board = new Board(GameConfig.builder()
                     .solutionLength(4)
-                    .enabledColors(new EnabledColors(7))
+                    .enabledColors(ColorModelGenerator.alphabetic(7))
                     .strategy(new OnlyOnceColorRepeatStrategy())
                     .build());
-            Guess solution = Guess.of(PINK, BLUE, RED, YELLOW);
+            Guess solution = Guess.of("DCBA");
 
             playGame(solution, 10);
         }
@@ -116,10 +116,10 @@ class SolverTest {
         void repeatsAllowedLen4() {
             board = new Board(GameConfig.builder()
                     .solutionLength(4)
-                    .enabledColors(new EnabledColors(7))
+                    .enabledColors(ColorModelGenerator.alphabetic(7))
                     .strategy(new RepeatsAllowedColorStrategy())
                     .build());
-            Guess solution = Guess.of(PINK, BLUE, RED, YELLOW);
+            Guess solution = Guess.of("DCBA");
 
             playGame(solution, 20);
         }
@@ -130,7 +130,9 @@ class SolverTest {
             GuessResult evaluation;
 
             do {
-                if (++attempts > roundLimit) throw new IllegalStateException("Did not find solution fast enough");
+                assertThat(++attempts)
+                        .withFailMessage("Did not find solution fast enough")
+                        .isLessThanOrEqualTo(roundLimit);
                 Guess guess = solver.generateGuess();
                 evaluation = evaluator.evaluate(guess, solution);
                 System.out.printf("Round %d: %s (%s)\n", attempts, guess, evaluation);

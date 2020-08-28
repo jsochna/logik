@@ -23,6 +23,8 @@ public class Board {
     public void recordGuess(Guess guess, GuessResult result) {
         Assert.state(guess.getBits().size() == config.solutionLength,
                 "Solution length doesn't match the config");
+        guess.getBits().forEach(color -> Assert.state(config.getEnabledColors().getColors().contains(color),
+            "Guess uses alternative set of colors"));
         var round = new Round(guess, result);
         rounds.add(round);
     }

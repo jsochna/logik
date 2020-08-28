@@ -1,7 +1,7 @@
 package cz.jsochna.demo.logik;
 
 import cz.jsochna.demo.logik.color_strategy.RepeatsAllowedColorStrategy;
-import cz.jsochna.demo.logik.model.EnabledColors;
+import cz.jsochna.demo.logik.model.ColorModelGenerator;
 import cz.jsochna.demo.logik.model.GameConfig;
 import cz.jsochna.demo.logik.model.Guess;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ class GuessGeneratorTest {
     @Test
     void allOptionsForThreeColorsTwoSlots() {
         var config = GameConfig.builder()
-                .enabledColors(new EnabledColors("ABC"))
+                .enabledColors(ColorModelGenerator.fromString("ABC"))
                 .solutionLength(2)
                 .strategy(new RepeatsAllowedColorStrategy())
                 .build();
@@ -81,7 +81,7 @@ class GuessGeneratorTest {
     private GameConfig.GameConfigBuilder simpleConfig() {
         return GameConfig.builder()
                 .solutionLength(1)
-                .enabledColors(new EnabledColors("AB"))
+                .enabledColors(ColorModelGenerator.fromString("AB"))
                 .strategy(new RepeatsAllowedColorStrategy());
     }
 
